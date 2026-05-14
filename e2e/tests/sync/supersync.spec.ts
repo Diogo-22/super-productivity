@@ -818,6 +818,8 @@ test.describe('@supersync SuperSync E2E', () => {
 
       // Verify time was recorded on Client A
       // Time is displayed in .time-wrapper .time-val
+      await taskLocatorA.scrollIntoViewIfNeeded();
+      await taskLocatorA.hover();
       const timeValA = taskLocatorA.locator('.time-wrapper .time-val').first();
       await expect(timeValA).toBeVisible({ timeout: 5000 });
       const timeTextA = await timeValA.textContent();
@@ -856,6 +858,8 @@ test.describe('@supersync SuperSync E2E', () => {
 
       await expectTaskVisible(clientB, taskName);
       const taskLocatorB = getTaskElement(clientB, taskName);
+      await taskLocatorB.scrollIntoViewIfNeeded();
+      await taskLocatorB.hover();
 
       // Verify time is displayed on Client B
       const timeValB = taskLocatorB.locator('.time-wrapper .time-val').first();

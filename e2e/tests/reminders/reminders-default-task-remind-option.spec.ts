@@ -39,7 +39,10 @@ test.describe('Default task reminder option', () => {
     // Change it to another option to check whether the setting takes effect
     // across other application areas where a reminder option can be chosen
     await selectedOption.click();
-    await page.getByText(changedOptionText).click();
+    const option = page
+      .locator('.cdk-overlay-pane')
+      .getByRole('option', { name: new RegExp(`^${changedOptionText}$`, 'i') });
+    await option.click();
   };
 
   test('should apply when scheduling a task using the due action', async ({

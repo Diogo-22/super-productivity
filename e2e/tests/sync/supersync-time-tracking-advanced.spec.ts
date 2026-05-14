@@ -70,6 +70,8 @@ test.describe('@supersync Time Tracking Advanced Sync', () => {
 
       // Capture tracked time
       const taskLocatorA = getTaskElement(clientA, taskName);
+      await taskLocatorA.scrollIntoViewIfNeeded();
+      await taskLocatorA.hover();
       const timeVal = taskLocatorA.locator('.time-wrapper .time-val').first();
       await expect(timeVal).toBeVisible({ timeout: 5000 });
       const trackedTime = await timeVal.textContent();
