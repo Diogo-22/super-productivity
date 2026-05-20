@@ -821,8 +821,10 @@ test.describe('@supersync SuperSync E2E', () => {
       await taskLocatorA.scrollIntoViewIfNeeded();
       await taskLocatorA.hover();
       const timeValA = taskLocatorA.locator('.time-wrapper .time-val').first();
-      await expect(timeValA).toBeVisible({ timeout: 5000 });
-      const timeTextA = await timeValA.textContent();
+      await expect
+        .poll(async () => (await timeValA.textContent())?.trim(), { timeout: 5000 })
+        .not.toBeFalsy();
+      const timeTextA = (await timeValA.textContent())?.trim();
       console.log(`[TimeTrack Test] Client A recorded time: ${timeTextA}`);
 
       // ============ PHASE 5: Sync to Server ============
@@ -863,8 +865,10 @@ test.describe('@supersync SuperSync E2E', () => {
 
       // Verify time is displayed on Client B
       const timeValB = taskLocatorB.locator('.time-wrapper .time-val').first();
-      await expect(timeValB).toBeVisible({ timeout: 10000 });
-      const timeTextB = await timeValB.textContent();
+      await expect
+        .poll(async () => (await timeValB.textContent())?.trim(), { timeout: 10000 })
+        .not.toBeFalsy();
+      const timeTextB = (await timeValB.textContent())?.trim();
       console.log(`[TimeTrack Test] Client B shows time: ${timeTextB}`);
 
       // Verify time is non-zero (should show something like "0h 0m 3s" or similar)

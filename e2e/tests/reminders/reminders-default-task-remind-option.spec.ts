@@ -8,7 +8,7 @@ test.describe('Default task reminder option', () => {
   // Should match the option set inside the default global configuration
   const defaultOptionText = 'when it starts';
   // Any other option different to the default to test the settings change
-  const changedOptionText = 'never';
+  const changedOptionText = 'Never';
 
   const changeDefaultTaskReminderOption = async (page: Page): Promise<void> => {
     await page.getByRole('menuitem', { name: 'Settings' }).click();
@@ -33,15 +33,19 @@ test.describe('Default task reminder option', () => {
     await remindersSection.click();
 
     // Should match the option set inside the default global configuration
-    const selectedOption = remindersSection.getByText(defaultOptionText);
-    await expect(selectedOption).toBeVisible();
+    const reminderSelect = remindersSection.getByLabel(
+      /Default remind option selected when creating tasks/i,
+    );
+    await expect(reminderSelect).toBeVisible();
+    await expect(reminderSelect).toContainText(new RegExp(defaultOptionText, 'i'));
 
     // Change it to another option to check whether the setting takes effect
     // across other application areas where a reminder option can be chosen
-    await selectedOption.click();
+    await reminderSelect.click();
     const option = page
-      .locator('.cdk-overlay-pane')
-      .getByRole('option', { name: new RegExp(`^${changedOptionText}$`, 'i') });
+      .locator('.cdk-overlay-pane mat-option')
+      .filter({ hasText: new RegExp(`^${changedOptionText}$`, 'i') })
+      .first();
     await option.click();
   };
 
@@ -93,7 +97,10 @@ test.describe('Default task reminder option', () => {
     await timeInput.click();
 
     // Wait for the reminder dropdown to appear and check the default option
-    await expect(page.getByText(changedOptionText)).toBeVisible({ timeout: 5000 });
+    const reminderSelect = scheduleDialog.getByLabel(/Remind at/i);
+    await expect(reminderSelect).toContainText(new RegExp(changedOptionText, 'i'), {
+      timeout: 5000,
+    });
   });
 
   test('should apply when scheduling a task using short syntax', async ({
@@ -134,7 +141,8 @@ test.describe('Default task reminder option', () => {
     await rescheduleBtn.waitFor({ state: 'visible', timeout: 10000 });
     await rescheduleBtn.click();
 
-    await expect(page.getByText(changedOptionText)).toBeVisible();
+    const reminderSelect = page.getByLabel(/Remind at/i);
+    await expect(reminderSelect).toContainText(new RegExp(changedOptionText, 'i'));
   });
 
   test('should apply when scheduling a task via the week schedule view', async ({
@@ -164,6 +172,7 @@ test.describe('Default task reminder option', () => {
     await scheduleItem.waitFor({ state: 'visible', timeout: 10000 });
     await scheduleItem.click();
 
-    await expect(page.getByText(changedOptionText)).toBeVisible();
+    const reminderSelect = page.getByLabel(/Remind at/i);
+    await expect(reminderSelect).toContainText(new RegExp(changedOptionText, 'i'));
   });
 });

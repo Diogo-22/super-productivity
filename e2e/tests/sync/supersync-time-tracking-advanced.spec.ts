@@ -73,8 +73,10 @@ test.describe('@supersync Time Tracking Advanced Sync', () => {
       await taskLocatorA.scrollIntoViewIfNeeded();
       await taskLocatorA.hover();
       const timeVal = taskLocatorA.locator('.time-wrapper .time-val').first();
-      await expect(timeVal).toBeVisible({ timeout: 5000 });
-      const trackedTime = await timeVal.textContent();
+      await expect
+        .poll(async () => (await timeVal.textContent())?.trim(), { timeout: 5000 })
+        .not.toBeFalsy();
+      const trackedTime = (await timeVal.textContent())?.trim();
       console.log(`[Archive Time Test] Tracked time: ${trackedTime}`);
 
       // Mark as done
